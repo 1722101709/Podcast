@@ -1,0 +1,306 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>podcast</title>
+    <link rel="shortcut icon" href="{% static 'icon.webp' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@1,500&display=swap');
+    *{
+        padding : 0px;
+        margin : 0px;
+        box-sizing : border-box;
+    }
+    body{
+        background : #010101;
+        color : #F3F3F3;
+        margin : 0px;
+        width : auto;
+        height : max-content;
+        overflow : overlay;
+    }
+    .container{
+        display : flex;
+        justify-content : center;
+        width : 100vw;
+    }
+    .PlayerLeft{
+        width : 50%;
+        height : 100%;
+        display : flex;
+        align-items : center;
+        flex-direction : column;
+    }
+    .upper{
+        width : 100%;
+        height : 100%;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        flex-direction : column;
+        position : relative;
+        transition : 0.7s ease-in-out;
+        margin-top : 30px;
+    }
+    .lower{
+        width : 100%;
+        height : 100%;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        flex-direction : column;
+        margin : 30px 0px;
+    }
+    .lyrics{
+        width : 100%;
+        display : flex;
+        flex-direction : column;
+        align-items : center;
+        text-align : center;
+        font-family: 'Noto Sans', sans-serif;
+        cursor : #E21 pointer;
+       caret-color : red;
+    }
+    .info{
+        display : flex;
+        width : 52%;
+        flex-direction : column;
+        justify-content : center;
+        align-items : center;
+    }
+    .poster{
+        width : 100%;
+        aspect-ratio : 1/1;
+        border-radius : 3%;
+        box-shadow : 0 0 9px #AAA;
+    }
+    .songName{
+        font-size : 31px;
+        margin-top : 30px;
+        color : #E21;
+    }
+    .movieName{
+        font-size : 17px;
+        font-style : italic;
+        opacity : 0.7;
+    }
+    .details{
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        width : 100%;
+        margin-top : 20px;
+        margin-bottom : 10px;
+    }
+    .bar{
+        width : 74%;
+        height : 2px;
+        cursor : pointer;
+        outline : none;
+        -webkit-appearance: none;
+    }
+    .bar::-webkit-slider-thumb{
+        background-color : #E21;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        overflow : visible;
+    }
+    .startTime{
+        margin-right : 5px;
+        font-size : 15px;
+    }
+    .endTime{
+        margin-left : 5px;
+        font-size : 15px;
+    }
+    .controls{
+        font-size : 29px;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        width : 52%;
+    }
+    .previous, .next, .shuffle, .songInfo{
+        width : 8.5%;
+        height : 52.3%;
+        cursor : pointer;
+    }
+    .play{
+        background : #E21;
+        border-radius : 50%;
+        width : 19.1%;
+        aspect-ratio : 1/1;
+        display : flex;
+        justify-content : center;
+        align-items : center;
+        cursor : pointer;
+    }
+    .play > i{
+        margin-left : 2px;
+    }
+    .QueueRight{
+        width : 50%;
+        height : 50%;
+        display : flex;
+        justify-content : center;
+        align-items : center;
+        flex-direction : column;
+    }
+    .Queueheading{
+        font-size : 37px;
+        margin : 20px;
+    }
+    .queue{
+        width : 100%;
+        height : 100%;
+        overflow-y : scroll;
+    }
+    .queue::-webkit-scrollbar{
+        width : 5px;
+    }
+    .queue::-webkit-scrollbar-track {
+        background-color: #ccc;
+    }
+    
+    .queue::-webkit-scrollbar-thumb {
+        background-color: #666;
+    }
+    .item{
+        display : flex;
+        height : 60px;
+        align-items : center;
+        justify-content : space-between;
+        border-bottom : 1px solid #222;
+        padding : 20px;
+        cursor : pointer;
+    }
+    .item:nth-child(1){
+        border-top : 1px solid #222;
+    }
+    .itemLeft{
+        display : flex;
+        align-items : center;
+        justify-content : space-between;
+        width : 62%;
+    }
+    .itemLeft img{
+        width : 12.23%;
+        aspect-ratio : 1/1;
+        border-radius : 5px;
+    }
+    .queueSongInfo{
+        display : flex;
+        flex-direction : column;
+        align-items : center;
+        width : 72%;
+        margin-left : 17%;
+    }
+    .queueSongName{
+        font-size : 17px;
+    }
+    .queueMovieName{
+        font-size : 13px;
+        opacity : 0.5;
+    }
+    .QueueSonglength{
+        margin-right : 20px;
+    }
+    .click-effect{
+        text-shadow : 0 0 15px yellow;
+        color : #DDD;
+        font-size : 15px;
+        transition 0.3s ease-in-out;
+    }
+    .playing-effect-gif{
+        background : url('{% static "playing-gif.webp" %}');
+        background-position : 73.8%;
+        background-size : 10% 100%;
+        background-repeat : no-repeat;
+        color : #E21;
+        font-size : 21px;
+    }
+    .playing-effect-image{
+        background : url('{% static "playing-image.png" %}');
+        background-position : 73.8%;
+        background-size : 10% 100%;
+        background-repeat : no-repeat;
+        color : #E21;
+    }
+    .playing-effect-songName{
+        font-size : 23px;
+    }
+    .playing-effect-movieName{
+        opacity : 0.9;
+        color : #E14032;
+        font-size : 17px;
+    }
+</style>
+<body onload="init()">
+<audio src="{% static 'Porata Simham Song Vikram.mp3' %}" class="audio" data-index="1"></audio>
+<div class="container">
+    <div class="PlayerLeft">
+        <div class="upper">
+            <div class="info">
+                <img src="{% static 'img.png' %}" class="poster">
+                <span class="songName">Porata Simham</span>
+                <span class="movieName">Vikram</span>
+            </div>
+            <div class="details">
+                <span class="startTime">0:00</span>
+                <input type="range" class="bar" min="0" max="100" value="0">
+                <span class="endTime">31:01:02</span>
+            </div>
+            <div class="controls">
+                <span class="shuffle">
+                    <i class="bi bi-shuffle"></i>
+                </span>
+                <span class="previous">
+                    <i class="bi bi-caret-left-fill"></i>
+                </span>
+                <span class="play">
+                    <i class="bi bi-play-fill"></i>
+                </span>
+                <span class="next">
+                    <i class="bi bi-caret-right-fill"></i>
+                </span>
+                <span class="songInfo">
+                    <i class="bi bi-info-circle"></i>
+                </span>
+            </div>
+        </div>
+        <div class="lower">
+            <div class="lyrics">
+            {% for item in data %}
+                {% if forloop.counter0 == 1 %}
+                    {{item.lyrics|linebreaks}}
+                {% endif%}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="QueueRight">
+        <span class="Queueheading">Queue</span>
+        <div class="queue">
+            {% for item in data %}
+                <div class="item" data-pk="{{item.pk}}">
+                    <div class="itemLeft">
+                        <img src="{{item.image.url}}">
+                        <div class="queueSongInfo">
+                            <span class="queueSongName">{{item.song}}</span>
+                            <span class="queueMovieName">{{item.movie}}</span>
+                        </div>
+                    </div>
+                    <span class="QueueSonglength"></span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+<script src="{% static 'home.js' %}"></script>
+</html>

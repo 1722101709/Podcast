@@ -1,0 +1,546 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>home</title>
+    <link rel="shortcut icon" href="{% static 'icon.webp' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
+    *{
+        padding : 0px;
+        margin : 0px;
+        box-sizing : border-box;
+    }
+    body{
+        background : #010101;
+        color : #F3F3F3;
+        margin : 0px;
+    }
+    .container{
+        display : flex;
+        justify-content : center;
+        width : 100vw;
+    }
+    .PlayerLeft{
+        width : 50%;
+        height : 100%;
+        display : flex;
+        align-items : center;
+        flex-direction : column;
+    }
+    .upper{
+        width : 100%;
+        height : 100%;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        flex-direction : column;
+        position : relative;
+        transition : 0.7s ease-in-out;
+    }
+    .upper.sticky {
+      position: fixed;
+      width : 25%;
+      top: 0;
+    }
+    .lower{
+        width : 100%;
+        height : 100%;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        flex-direction : column;
+    }
+    .lyrics{
+        width : 100%;
+        display : flex;
+        flex-direction : column;
+        align-items : center;
+    }
+    .lyrics p{
+        width : 100%;
+        margin : 10px 0px;
+        text-align : center;
+    }
+    .info{
+        display : flex;
+        width : 52%;
+        flex-direction : column;
+        justify-content : center;
+        align-items : center;
+    }
+    .poster{
+        width : 100%;
+        aspect-ratio : 1/1;
+        border-radius : 3%;
+        box-shadow : 0 0 9px #AAA;
+    }
+    .songName{
+        font-size : 31px;
+        margin-top : 30px;
+        color : #E21;
+    }
+    .movieName{
+        font-size : 17px;
+        font-style : italic;
+        opacity : 0.7;
+    }
+    .details{
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        width : 100%;
+    }
+    .bar{
+        width : 74%;
+        height : 2px;
+        cursor : pointer;
+        outline : none;
+        -webkit-appearance: none;
+    }
+    .bar::-webkit-slider-thumb{
+        background-color : #E21;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        overflow : visible;
+    }
+    .startTime{
+        margin-right : 5px;
+        font-size : 15px;
+    }
+    .endTime{
+        margin-left : 5px;
+        font-size : 15px;
+    }
+    .controls{
+        font-size : 29px;
+        display : flex;
+        justify-content : space-evenly;
+        align-items : center;
+        width : 52%;
+    }
+    .previous, .next, .shuffle, .songInfo{
+        width : 8.5%;
+        height : 52.3%;
+        cursor : pointer;
+    }
+    .play{
+        background : #E21;
+        border-radius : 50%;
+        width : 19.1%;
+        aspect-ratio : 1/1;
+        display : flex;
+        justify-content : center;
+        align-items : center;
+        cursor : pointer;
+    }
+    .play > i{
+        margin-left : 2px;
+    }
+    .QueueRight{
+        width : 50%;
+        height : 50%;
+        display : flex;
+        justify-content : center;
+        align-items : center;
+        flex-direction : column;
+    }
+    .Queueheading{
+        font-size : 37px;
+        margin : 20px;
+    }
+    .queue{
+        width : 100%;
+        height : 100%;
+        overflow-y : scroll;
+    }
+    .queue::-webkit-scrollbar{
+        width : 5px;
+    }
+    .queue::-webkit-scrollbar-track {
+        background-color: #ccc;
+    }
+    
+    .queue::-webkit-scrollbar-thumb {
+        background-color: #666;
+    }
+    .item{
+        display : flex;
+        height : 60px;
+        align-items : center;
+        justify-content : space-between;
+        border-bottom : 1px solid #222;
+        padding : 20px;
+        cursor : pointer;
+    }
+    .item:nth-child(1){
+        border-top : 1px solid #222;
+    }
+    .itemLeft{
+        display : flex;
+        align-items : center;
+        justify-content : space-between;
+        width : 62%;
+    }
+    .itemLeft img{
+        width : 12.23%;
+        aspect-ratio : 1/1;
+        border-radius : 5px;
+    }
+    .queueSongInfo{
+        display : flex;
+        flex-direction : column;
+        align-items : center;
+        width : 72%;
+        margin-left : 17%;
+    }
+    .queueSongName{
+        font-size : 17px;
+    }
+    .queueMovieName{
+        font-size : 13px;
+        opacity : 0.5;
+    }
+    .QueueSonglength{
+        margin-right : 20px;
+    }
+    .click-effect{
+        text-shadow : 0 0 15px yellow;
+        color : #DDD;
+        font-size : 15px;
+        transition 0.3s ease-in-out;
+    }
+    .playing-effect-gif{
+        background : url('{% static "playing-gif.webp" %}');
+        background-position : 73.8%;
+        background-size : 10% 100%;
+        background-repeat : no-repeat;
+        color : #E21;
+        font-size : 21px;
+    }
+    .playing-effect-image{
+        background : url('{% static "playing-image.png" %}');
+        background-position : 73.8%;
+        background-size : 10% 100%;
+        background-repeat : no-repeat;
+        color : #E21;
+    }
+    .playing-effect-songName{
+        font-size : 23px;
+    }
+    .playing-effect-movieName{
+        opacity : 0.9;
+        color : #E14032;
+        font-size : 17px;
+    }
+</style>
+<body onload="init()">
+<audio src="{% static 'Porata Simham Song Vikram.mp3' %}" class="audio" data-index="1"></audio>
+<div class="container">
+    <div class="PlayerLeft">
+        <div class="upper">
+            <div class="info">
+                <img src="{% static 'img.png' %}" class="poster">
+                <span class="songName">Porata Simham</span>
+                <span class="movieName">Vikram</span>
+            </div>
+            <div class="details">
+                <span class="startTime">0:00</span>
+                <input type="range" class="bar" min="0" max="100" value="0">
+                <span class="endTime">31:01:02</span>
+            </div>
+            <div class="controls">
+                <span class="shuffle">
+                    <i class="bi bi-shuffle"></i>
+                </span>
+                <span class="previous">
+                    <i class="bi bi-caret-left-fill"></i>
+                </span>
+                <span class="play">
+                    <i class="bi bi-play-fill"></i>
+                </span>
+                <span class="next">
+                    <i class="bi bi-caret-right-fill"></i>
+                </span>
+                <span class="songInfo">
+                    <i class="bi bi-info-circle"></i>
+                </span>
+            </div>
+        </div>
+        <div class="lower">
+            <div class="lyrics">
+            {% for item in data %}
+                {% if forloop.counter0 == 15 %}
+                    {{item.lyrics|linebreaks}}
+                {% endif%}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="QueueRight">
+        <span class="Queueheading">Queue</span>
+        <div class="queue">
+            {% for item in data %}
+                <div class="item">
+                    <div class="itemLeft">
+                        <img src="{{item.image.url}}">
+                        <div class="queueSongInfo">
+                            <span class="queueSongName">{{item.song}}</span>
+                            <span class="queueMovieName">{{item.movie}}</span>
+                        </div>
+                    </div>
+                    <audio src="{{item.music.url}}" class="queueMusic"></audio>
+                    <span class="QueueSonglength"></span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    // Delay function
+
+    var delay = (time) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+        resolve();
+        }, time)
+    })
+    
+    // Music Player will stick to the top of the page while scrolling
+    
+    window.addEventListener('scroll', () => {
+        const stickyDiv = document.querySelector('.upper');
+        const stickyDivOffsetTop = stickyDiv.offsetTop;
+        console.log(window.pageYOffset);
+        if (window.pageYOffset > stickyDivOffsetTop) {
+            stickyDiv.classList.add('sticky');
+        }
+        else{
+            stickyDiv.classList.remove('sticky');
+        }
+    });
+    
+    
+    
+    // Add click events to all the items in the queue
+    
+    async function init(){
+        let items = document.querySelectorAll('.item');
+        for(let index = 0; index < items.length; index++){
+    
+            let item = items[index];
+            item.children[2].innerHTML = format(item.children[1].duration);
+            if(isNaN(item.children[1].duration)){
+                await delay(500);
+                item.children[2].innerHTML = format(item.children[1].duration);
+            }
+    
+            item.setAttribute("data-index", index.toString());
+    
+            item.addEventListener('click', () => {
+    
+                let itemImage = item.children[0].children[0];
+                let posterImage = document.querySelector('.poster');
+                posterImage.src = itemImage.src;
+    
+                let itemSongName = item.children[0].children[1].children[0];
+                let posterSongName = document.querySelector('.songName');
+                posterSongName.innerHTML = itemSongName.innerHTML;
+    
+                let itemMovieName = item.children[0].children[1].children[1];
+                let posterMovieName = document.querySelector('.movieName');
+                posterMovieName.innerHTML = itemMovieName.innerHTML;
+    
+                let itemMusic = item.children[1];
+                let audio = document.querySelector('.audio');
+                audio.src = itemMusic.src;
+    
+                audio = document.querySelector('.audio');
+                currentIndex = parseInt(audio.getAttribute('data-index'));
+                items = document.querySelectorAll('.item');
+    
+                items[currentIndex].classList.remove('playing-effect-gif');
+                items[currentIndex].classList.remove('playing-effect-image');
+    
+                item.classList.add('playing-effect-gif');
+    
+                items[currentIndex].children[0].children[1].children[0].classList.remove('playing-effect-songName');
+                items[currentIndex].children[0].children[1].children[1].classList.remove('playing-effect-movieName');
+    
+                document.querySelector('.audio').setAttribute("data-index", item.getAttribute('data-index'));
+    
+                item.children[0].children[1].children[0].classList.add('playing-effect-songName');
+                item.children[0].children[1].children[1].classList.add('playing-effect-movieName');
+    
+                pauseAndPlay();
+    
+            })
+        }
+    }
+    
+    
+    
+    // To get new value in new range
+    
+    function getvalue(old_value, old_min, old_max, new_min, new_max){
+    
+        let new_value = ((old_value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;
+    
+        return new_value;
+    
+    }
+    
+    // Format the time in MM:SS format
+    
+    function format(time){
+        let minutes = Math.floor(time / 60);
+        let seconds = Math.floor(time - minutes * 60);
+        new_time = minutes + ':' + seconds;
+        if(seconds < 10){
+            new_time = minutes + ':0' + seconds;
+        }
+        return new_time;
+    }
+    
+    
+    
+    // Pause and play event handler
+    
+    async function pauseAndPlay(){
+        let audio = document.querySelector('.audio');
+    
+        if(audio.paused == true){
+            audio.play();
+            document.querySelector('.play > i').classList = 'bi bi-pause-fill';
+    
+            audio = document.querySelector('.audio');
+            currentIndex = parseInt(audio.getAttribute('data-index'));
+    
+            document.querySelectorAll('.item')[currentIndex].classList.remove('playing-effect-image');
+            document.querySelectorAll('.item')[currentIndex].classList.add('playing-effect-gif');
+    
+            while(audio.paused == false){
+                await delay(1000);
+                let new_value = getvalue(audio.currentTime, 0, audio.duration, 0, 100);
+                let bar = document.querySelector('.bar');
+                bar.value = new_value;
+    
+                let startTime = document.querySelector('.startTime');
+                startTime.innerHTML = format(audio.currentTime);
+    
+                let endTime = document.querySelector('.endTime');
+                endTime.innerHTML = format(audio.duration);
+    
+                bar.style.background = 'linear-gradient(to right, #F32 0%, #F32 ' + bar.value + '%, #F3F3F3 ' + bar.value + '%, #F3F3F3 100%)';
+    
+            }
+    
+            if(audio.currentTime == audio.duration){
+                document.querySelector('.play > i').classList = 'bi bi-play-fill';
+                playPreviousOrNextSong(1);
+            }
+        }
+        else{
+            audio.pause();
+            document.querySelector('.play > i').classList = 'bi bi-play-fill';
+    
+            audio = document.querySelector('.audio');
+            currentIndex = parseInt(audio.getAttribute('data-index'));
+    
+            document.querySelectorAll('.item')[currentIndex].classList.remove('playing-effect-gif');
+            document.querySelectorAll('.item')[currentIndex].classList.add('playing-effect-image');
+        }
+    }
+    
+    
+    
+    // play and pause event handling
+    
+    document.querySelector('.play').addEventListener('click',pauseAndPlay)
+    
+    
+    
+    // space bar press event handler
+    
+    document.querySelector('body').addEventListener('keydown', (event) => {
+        if(event.code == 'Space'){
+            pauseAndPlay();
+        }
+    })
+    
+    
+    
+    // play previous or next song
+    
+    function playPreviousOrNextSong(step){
+        audio = document.querySelector('.audio');
+        currentIndex = parseInt(audio.getAttribute('data-index'));
+        items = document.querySelectorAll('.item');
+        nextIndex = (currentIndex + step + items.length) % (items.length);
+        items[nextIndex].dispatchEvent(new Event('click'));
+    }
+    
+    
+    
+    // when previous button pressed
+    
+    document.querySelector('.previous').addEventListener('click', () => {
+    
+        let icon = document.querySelector('.previous > i');
+        icon.classList.add('click-effect');
+        setTimeout(() => {
+            icon.classList.remove('click-effect');
+        }, 300);
+    
+        playPreviousOrNextSong(-1);
+    })
+    
+    
+    // when next button pressed
+    
+    document.querySelector('.next').addEventListener('click', () => {
+    
+        let icon = document.querySelector('.next > i');
+        icon.classList.add('click-effect');
+        setTimeout(() => {
+            icon.classList.remove('click-effect');
+        }, 300);
+    
+        playPreviousOrNextSong(1);
+    })
+    
+    
+    // shuffle the queue
+    
+    document.querySelector('.shuffle').addEventListener('click', () => {
+    
+        let icon = document.querySelector('.shuffle > i');
+        icon.classList.add('click-effect');
+        setTimeout(() => {
+            icon.classList.remove('click-effect');
+        }, 300);
+    
+        const queue = document.querySelector('.queue');
+        queueArray = Array.from(queue.children);
+        queueArray.forEach(item => item.remove());
+        for (let i = queueArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [queueArray[i], queueArray[j]] = [queueArray[j], queueArray[i]];
+        }
+        queue.append(...queueArray);
+    
+        audioIndex = parseInt(document.querySelector('.audio').getAttribute("data-index"));
+    
+        for(let index = 0; index < queue.children.length; index++){
+            if(queue.children[index].getAttribute("data-index") == audioIndex){
+                document.querySelector('.audio').setAttribute("data-index", index.toString());
+            }
+            queue.children[index].setAttribute("data-index", index.toString());
+        }
+    })
+</script>
+</html>
